@@ -222,7 +222,7 @@ namespace Far
                     if (!string.IsNullOrEmpty(item.Extension))
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
-                        var size = Math.Round((item.Size / 8 / 1024), 1);
+                        var size = item.Size / 8 / 1024;
                         if (size == 0)
                         {
                             size = 1;
@@ -260,7 +260,7 @@ namespace Far
                     if (!string.IsNullOrEmpty(item.Extension))
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
-                        var size = Math.Round((item.Size / 8 / 1024), 1);
+                        var size = item.Size / 8 / 1024;
                         if (size == 0)
                         {
                             size = 1;
@@ -314,7 +314,7 @@ namespace Far
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(DriversOnLeftPanel[0].Name);
+                    Console.WriteLine(DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     return;
                 }
@@ -521,10 +521,12 @@ namespace Far
         /// отображение дисков
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
-        public void ShowDisk()
+        public void ShowDisk(FilePanel panel)
         {
-            if (FilePanel == FilePanel.Left)
+            var p = panel;
+            if (p == FilePanel.Left)
             {
+                DriversOnLeftPanel.Clear();
                 new Clear(ConsoleWidht, ConsoleHeight).ClearPanel(FilePanel.Left);
 
                 var drivers = DriveInfo.GetDrives();
@@ -538,6 +540,7 @@ namespace Far
             }
             else
             {
+                DriversOnRightPanel.Clear();
                 new Clear(ConsoleWidht, ConsoleHeight).ClearPanel(FilePanel.Right);
 
                 var drivers = DriveInfo.GetDrives();
@@ -597,7 +600,7 @@ namespace Far
         /// <summary>
         /// Убрать окно помощи
         /// </summary>
-        public void HideHelp()
+        public void HideMessage()
         {
             if (!HelpIsOpen)
             {
@@ -609,13 +612,25 @@ namespace Far
             {
                 ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
                 ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
-                VerticalLine verticalLine = new VerticalLine();
-                verticalLine.DrawLine(1, ConsoleHeight - 3, ConsoleWidht / 2, '|');
             }
-            else 
+            else if (DriversOnLeftPanel.Count == 0 && DriversOnRightPanel.Count != 0)
             {
-
+                ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
+                ShowDisk(FilePanel.Right);
             }
+            else if (DriversOnLeftPanel.Count != 0 && DriversOnRightPanel.Count == 0)
+            {
+                ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
+                ShowDisk(FilePanel.Left);
+            }
+            else
+            {
+                ShowDisk(FilePanel.Right);
+                ShowDisk(FilePanel.Left);
+            }
+            
+            VerticalLine verticalLine = new VerticalLine();
+            verticalLine.DrawLine(1, ConsoleHeight - 3, ConsoleWidht / 2, '|');
         }
     }
 }
