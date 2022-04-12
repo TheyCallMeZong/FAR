@@ -31,7 +31,7 @@ namespace Far
                     path = path.Remove(path.LastIndexOf('\\')); 
                     if (!path.Contains("\\"))
                     {
-                        view.ShowDisk();
+                        view.ShowDisk(view.FilePanel);
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Left));
@@ -68,7 +68,7 @@ namespace Far
                     path = path.Remove(path.LastIndexOf('\\'));
                     if (!path.Contains("\\"))
                     {
-                        view.ShowDisk();
+                        view.ShowDisk(view.FilePanel);
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Right));

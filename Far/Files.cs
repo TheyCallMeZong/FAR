@@ -5,7 +5,7 @@
         /// <summary>
         /// Размер файла
         /// </summary>
-        public float Size { get; set; }
+        public long Size { get; set; }
 
         /// <summary>
         /// Имя файла

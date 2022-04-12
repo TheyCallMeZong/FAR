@@ -21,7 +21,7 @@
                 var t = Console.ReadKey();
                 if (view.HelpIsOpen)
                 {
-                    view.HideHelp();
+                    view.HideMessage();
                     view.HelpIsOpen = false;
                 }
                 foreach (var item in commands)
