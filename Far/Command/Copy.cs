@@ -27,9 +27,9 @@
                             if (click.Key == ConsoleKey.Y)
                             {
                                 File.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
-                                File.Copy(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name, view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
                             }
                         }
+                        File.Copy(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name, view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
                     }
                     else
                     {
@@ -48,9 +48,9 @@
                             if (click.Key == ConsoleKey.Y)
                             {
                                 File.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
-                                File.Copy(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
                             }
                         }
+                        File.Copy(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
                     }
                     else
                     {

@@ -129,7 +129,7 @@ namespace Far
         /// </summary>
         private const int MAXSIZE = 3;
 
-        private string[] menu = new[]
+        public string[] menu = new[]
         {
             "F1 Help",
             "F2 CreateFile",
@@ -155,6 +155,8 @@ namespace Far
             OffsetForFileAndDir = 3;
             CursorOffsetOnLeftPanel = 4;
             CursorOffsetOnRightPanel = 4;
+            AbsolutleCursorOffseOnLeftPanel = 0;
+            AbsolutleCursorOffseOnRightPanel = 0;
             DriversOnRightPanel = new List<DriveInfo>();
             DriversOnLeftPanel = new List<DriveInfo>();
             FilePanel = FilePanel.Left;
@@ -240,6 +242,10 @@ namespace Far
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
                 foreach (var item in panel.Files)
                 {
+                    if (OffsetForFileAndDir == ConsoleHeight - 4)
+                    {
+                        break;
+                    }
                     Console.SetCursorPosition(1, OffsetForFileAndDir++);
                     Console.Write(Substring(item.Name));
                     Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
@@ -287,7 +293,7 @@ namespace Far
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
                     {
-                        return;
+                        break;
                     }
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForFileAndDir++);
                     Console.Write(Substring(item.Name));
@@ -314,45 +320,11 @@ namespace Far
         }
 
         /// <summary>
-        /// Обрезание 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        private string Substring(string str)
-        {
-            if (str.Length > ConsoleWidht / 5)
-            {
-                str = str.Substring(0, ConsoleWidht / 5) + "..";
-            }
-            return str;
-        }
-
-        /// <summary>
-        /// получение отступа для отображение расширения и размера файла
-        /// </summary>
-        /// <param name="panel"></param>
-        /// <returns></returns>
-        public int GetLeftOffset(Panel panel)
-        {
-            if (panel.FilePanel == FilePanel.Left)
-            {
-                return ConsoleWidht / 2 - ConsoleWidht / 4;
-            }
-            else
-            {
-                return ConsoleWidht - ConsoleWidht / 4;
-            }
-        }
-
-        /// <summary>
         /// Установка начального положения курсора
         /// </summary>
         /// <param name="panel"></param>
         public void SetStartCursor(FilePanel panel)
         {
-            string ext;
-            long size;
             if (panel == FilePanel.Left)
             {
                 if (FilesAndDirectoriesOnLeftPanel.Count == 0 && DriversOnLeftPanel.Count == 0)
@@ -421,8 +393,6 @@ namespace Far
         public void MoveCusrorDown()
         {
             string item;
-            string ext;
-            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (DriversOnLeftPanel.Count != 0 && CursorOffsetOnLeftPanel != DriversOnLeftPanel.Count + 2)
@@ -508,8 +478,6 @@ namespace Far
         public void MoveCusrorUp()
         {
             string item;
-            string ext;
-            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (CursorOffsetOnLeftPanel == 4 && DriversOnLeftPanel.Count == 0)
@@ -632,16 +600,7 @@ namespace Far
                 FilesAndDirectoriesOnRightPanel.Clear();
             }
             OffsetForFileAndDir = 3;
-            SetStartCursor(panel);
-        }
-
-        /// <summary>
-        /// Отрисовка Хелпы
-        /// </summary>
-        public void ShowHelpMessage()
-        {
-            FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
-            FormWithMessage.ShowHelpMessage(ConsoleWidht, ConsoleHeight, menu);
+            SetStartCursor(FilePanel);
         }
 
         /// <summary>
@@ -687,5 +646,38 @@ namespace Far
                 }
             }
         }
+
+        /// <summary>
+        /// Обрезание 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private string Substring(string str)
+        {
+            if (str.Length > ConsoleWidht / 5)
+            {
+                str = str.Substring(0, ConsoleWidht / 5) + "..";
+            }
+            return str;
+        }
+
+        /// <summary>
+        /// получение отступа для отображение расширения и размера файла
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <returns></returns>
+        public int GetLeftOffset(Panel panel)
+        {
+            if (panel.FilePanel == FilePanel.Left)
+            {
+                return ConsoleWidht / 2 - ConsoleWidht / 4;
+            }
+            else
+            {
+                return ConsoleWidht - ConsoleWidht / 4;
+            }
+        }
+
     }
 }

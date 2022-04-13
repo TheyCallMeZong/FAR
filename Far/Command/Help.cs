@@ -13,8 +13,9 @@
         public bool Execute()
         {
             View view = View.GetInstance();
-            view.ShowHelpMessage();
-
+            FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
+            FormWithMessage.ShowHelpMessage(view.ConsoleWidht, view.ConsoleHeight, view.menu);
+            Window.MenuIsOpen = true;
             return false;
         }
     }
