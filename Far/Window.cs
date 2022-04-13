@@ -17,7 +17,8 @@ namespace Far
                 new Help(),
                 new CreateFile(),
                 new Rename(), 
-                new Edit()
+                new Edit(),
+                new Copy()
             };
 
         /// <summary>
