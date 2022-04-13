@@ -20,7 +20,9 @@ namespace Far
                 new Edit(),
                 new RenMove(),
                 new Copy(),
-                new CreateDirectory()
+                new CreateDirectory(),
+                new Delete(),
+                new Tree()
             };
 
         /// <summary>
