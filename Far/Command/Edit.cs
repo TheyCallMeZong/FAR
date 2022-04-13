@@ -26,7 +26,7 @@ namespace Far.Command
                 if (item.Extension == ".exe")
                 {
                     Process process = new Process();
-                    process.StartInfo.FileName = item.Path;
+                    process.StartInfo.FileName = item.Path + "\\" + item.Name;
                     process.Start();
                 }
             }
@@ -44,7 +44,7 @@ namespace Far.Command
                 if (item.Extension == ".exe")
                 {
                     Process process = new Process();
-                    process.StartInfo.FileName = item.Path;
+                    process.StartInfo.FileName = item.Path + "\\" + item.Name;
                     process.Start();
                 }
             }

@@ -244,7 +244,7 @@ namespace Far
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
                     {
-                        return;
+                        break;
                     }
                     Console.SetCursorPosition(1, OffsetForFileAndDir++);
                     Console.Write(Substring(item.Name));
@@ -293,7 +293,7 @@ namespace Far
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
                     {
-                        return;
+                        break;
                     }
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForFileAndDir++);
                     Console.Write(Substring(item.Name));

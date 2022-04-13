@@ -56,6 +56,12 @@ namespace Far.Command
                         process.Start();
                     }
                 }
+                else if (item.Extension == ".exe")
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = item.Path + "\\" + item.Name;
+                    process.Start();
+                }
             }
             else
             {
@@ -96,6 +102,12 @@ namespace Far.Command
                         process.StartInfo.Arguments = item.Path + "\\" + item.Name;
                         process.Start();
                     }
+                }
+                else if (item.Extension == ".exe")
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = item.Path + "\\" + item.Name;
+                    process.Start();
                 }
             }
             return false;
