@@ -7,7 +7,7 @@
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
-            return item.Key == ConsoleKey.F3;
+            return item.Key == ConsoleKey.F4;
         }
 
         public bool Execute()
