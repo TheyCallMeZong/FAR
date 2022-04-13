@@ -35,6 +35,8 @@
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.SetCursorPosition(view.ConsoleWidht / 2 + 1, view.CursorOffsetOnRightPanel);
                     Console.WriteLine(file);
+                    view.ShowExt(FilePanel.Right);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
                 }
                 else
                 {
@@ -63,6 +65,7 @@
                     Console.SetCursorPosition(1, view.CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.WriteLine(item);
+                    view.ShowExt(FilePanel.Left);
                 }
                 return false;
             }
@@ -88,6 +91,7 @@
                     Console.SetCursorPosition(1, view.CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(file);
+                    view.ShowExt(FilePanel.Left);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                 }
                 else
@@ -117,6 +121,7 @@
                     Console.SetCursorPosition(view.ConsoleWidht / 2 + 1, view.CursorOffsetOnRightPanel);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.WriteLine(file);
+                    view.ShowExt(FilePanel.Right);
                 }
                 return false;
             }

@@ -16,7 +16,7 @@ namespace Far.Command
             if (view.FilePanel == FilePanel.Left)
             {
                 item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4];
-                if (item.Extension == "txt")
+                if (item.Extension == ".txt")
                 {
                     Process process = new();
                     process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
@@ -34,7 +34,7 @@ namespace Far.Command
             {
                 item = view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4];
 
-                if (item.Extension == "txt")
+                if (item.Extension == ".txt")
                 {
                     Process process = new();
                     process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
