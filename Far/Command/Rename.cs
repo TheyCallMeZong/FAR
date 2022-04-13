@@ -3,7 +3,7 @@
     /// <summary>
     /// Изменение имени файла
     /// </summary>
-    public class Edit : ICommand<ConsoleKeyInfo>
+    public class Rename : ICommand<ConsoleKeyInfo>
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
