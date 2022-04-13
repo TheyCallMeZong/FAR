@@ -129,7 +129,7 @@ namespace Far
         /// </summary>
         private const int MAXSIZE = 3;
 
-        private string[] menu = new[]
+        public string[] menu = new[]
         {
             "F1 Help",
             "F2 CreateFile",
@@ -325,8 +325,6 @@ namespace Far
         /// <param name="panel"></param>
         public void SetStartCursor(FilePanel panel)
         {
-            string ext;
-            long size;
             if (panel == FilePanel.Left)
             {
                 if (FilesAndDirectoriesOnLeftPanel.Count == 0 && DriversOnLeftPanel.Count == 0)
@@ -395,8 +393,6 @@ namespace Far
         public void MoveCusrorDown()
         {
             string item;
-            string ext;
-            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (DriversOnLeftPanel.Count != 0 && CursorOffsetOnLeftPanel != DriversOnLeftPanel.Count + 2)
@@ -482,8 +478,6 @@ namespace Far
         public void MoveCusrorUp()
         {
             string item;
-            string ext;
-            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (CursorOffsetOnLeftPanel == 4 && DriversOnLeftPanel.Count == 0)
@@ -607,15 +601,6 @@ namespace Far
             }
             OffsetForFileAndDir = 3;
             SetStartCursor(FilePanel);
-        }
-
-        /// <summary>
-        /// Отрисовка Хелпы
-        /// </summary>
-        public void ShowHelpMessage()
-        {
-            FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
-            FormWithMessage.ShowHelpMessage(ConsoleWidht, ConsoleHeight, menu);
         }
 
         /// <summary>
