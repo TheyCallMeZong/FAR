@@ -1,20 +1,19 @@
-﻿namespace Far
+﻿namespace Far.Command
 {
     /// <summary>
-    /// Помощь
+    /// Создание файла
     /// </summary>
-    public class Help : ICommand<ConsoleKeyInfo>
+    public class CreateFile : ICommand<ConsoleKeyInfo>
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
-            return item.Key == ConsoleKey.F1;
+            return item.Key == ConsoleKey.F2;
         }
 
         public bool Execute()
         {
             View view = View.GetInstance();
-            view.ShowHelpMessage();
-
+            view.ShowCreateFile();
             return false;
         }
     }

@@ -1,19 +1,19 @@
-﻿namespace Far
+﻿namespace Far.Command
 {
     /// <summary>
-    /// Скролинг вниз
+    /// Изменение имени файла
     /// </summary>
-    public class DownMove : ICommand<ConsoleKeyInfo>
+    public class Rename : ICommand<ConsoleKeyInfo>
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
-            return item.Key == ConsoleKey.DownArrow;
+            return item.Key == ConsoleKey.F3;
         }
 
         public bool Execute()
         {
             View view = View.GetInstance();
-            view.MoveCusrorDown();
+            view.ShowEditMessage();
             return false;
         }
     }

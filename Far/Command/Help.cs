@@ -1,19 +1,20 @@
-﻿namespace Far
+﻿namespace Far.Command
 {
     /// <summary>
-    /// Скролинг вверх
+    /// Помощь
     /// </summary>
-    public class UpMove : ICommand<ConsoleKeyInfo>
+    public class Help : ICommand<ConsoleKeyInfo>
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
-            return item.Key == ConsoleKey.UpArrow;
+            return item.Key == ConsoleKey.F1;
         }
 
         public bool Execute()
         {
             View view = View.GetInstance();
-            view.MoveCusrorUp();
+            view.ShowHelpMessage();
+
             return false;
         }
     }
