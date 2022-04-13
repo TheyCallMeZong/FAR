@@ -30,16 +30,22 @@ namespace Far
         /// </summary>
         public void Run()
         {
+            Thread thread = new Thread(Tick);
+            thread.Start();
+            object obj = new object();
             bool quit = false;
             while (!quit)
             {
                 var t = Console.ReadKey(true);
-                foreach (var item in commands)
+                lock (obj)
                 {
-                    if (item.CanExecute(t))
+                    foreach (var item in commands)
                     {
-                        quit = item.Execute();
-                        break;
+                        if (item.CanExecute(t))
+                        {
+                            quit = item.Execute();
+                            break;
+                        }
                     }
                 }
             }
@@ -76,6 +82,18 @@ namespace Far
             view.SetStartCursor(view.FilePanel);
             VerticalLine verticalLine = new VerticalLine();
             verticalLine.DrawLine(1, view.ConsoleHeight - 3, view.ConsoleWidht / 2, '|');
+        }
+
+        /// <summary>
+        ///  выделяем поток для вывода времени
+        /// </summary>
+        void Tick()
+        {
+            while (true)
+            {
+                Console.SetCursorPosition(Console.WindowWidth - 20, Console.WindowHeight - 3);
+                Console.WriteLine($"{DateTime.Now.Hour}:{DateTime.Now.Minute}.{DateTime.Now.Second}");
+            }
         }
     }
 }
