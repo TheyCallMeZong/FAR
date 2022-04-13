@@ -269,7 +269,6 @@ namespace Far
                 CursorOffsetOnRightPanel = 4;
             }
             OffsetForFileAndDir = 3;
-            SetStartCursor();
         }
 
         /// <summary>
@@ -293,9 +292,9 @@ namespace Far
         /// Установка начального положения курсора
         /// </summary>
         /// <param name="panel"></param>
-        public void SetStartCursor()
+        public void SetStartCursor(FilePanel panel)
         {
-            if (FilePanel == FilePanel.Left)
+            if (panel == FilePanel.Left)
             {
                 if (FilesAndDirectoriesOnLeftPanel.Count == 0 && DriversOnLeftPanel.Count == 0)
                 {
@@ -548,7 +547,7 @@ namespace Far
                 FilesAndDirectoriesOnRightPanel.Clear();
             }
             OffsetForFileAndDir = 3;
-            SetStartCursor();
+            SetStartCursor(panel);
         }
 
         /// <summary>
@@ -594,6 +593,67 @@ namespace Far
             catch
             {
                 
+            }
+            finally
+            {
+                Window.HideMessage();
+            }
+        }
+
+        /// <summary>
+        /// Изменение имени файла
+        /// </summary>
+        public void ShowEditMessage()
+        {
+            FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
+            var newFileName = FormWithMessage.ShowEditFileMessage(ConsoleWidht, ConsoleHeight);
+            if (string.IsNullOrEmpty(newFileName))
+            {
+                Window.HideMessage();
+                return;
+            }
+            try
+            {
+                if (FilePanel == FilePanel.Left)
+                {
+                    var file = PathOnLeftPanel + "\\" + FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                    if (File.Exists(file))
+                    {
+                        if (!File.Exists(PathOnLeftPanel + "\\" + newFileName))
+                        {
+                            File.Move(file, PathOnLeftPanel + "\\" + newFileName);
+                        }
+                    }
+                    else if (Directory.Exists(file))
+                    {
+                        if (!Directory.Exists(PathOnLeftPanel + "\\" + newFileName))
+                        {
+                            Directory.Move(file, PathOnLeftPanel + "\\" + newFileName);
+                        }
+                    }
+                }
+                else
+                {
+                    var file = PathOnRightPanel + "\\" + FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                    if (File.Exists(file))
+                    {
+                        if (!File.Exists(PathOnRightPanel + "\\" + newFileName))
+                        {
+                            File.Move(file, PathOnRightPanel + "\\" + newFileName);
+                        }
+                    }
+                    else if (Directory.Exists(file))
+                    {
+                        if (!Directory.Exists(PathOnRightPanel + "\\" + newFileName))
+                        {
+                            Directory.Move(file, PathOnRightPanel + "\\" + newFileName);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
             }
             finally
             {

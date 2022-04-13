@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Far.Command
+﻿namespace Far.Command
 {
-    internal class Edit
+    /// <summary>
+    /// Изменение имени файла
+    /// </summary>
+    public class Edit : ICommand<ConsoleKeyInfo>
     {
+        public bool CanExecute(ConsoleKeyInfo item)
+        {
+            return item.Key == ConsoleKey.F3;
+        }
+
+        public bool Execute()
+        {
+            View view = View.GetInstance();
+            view.ShowEditMessage();
+            return false;
+        }
     }
 }

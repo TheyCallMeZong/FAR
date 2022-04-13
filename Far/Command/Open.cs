@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Far
+namespace Far.Command
 {
     /// <summary>
     /// Открытие файла или директории
@@ -22,7 +22,8 @@ namespace Far
                 if (view.DriversOnLeftPanel.Count > 0)
                 {
                     str = view.DriversOnLeftPanel[view.CursorOffsetOnLeftPanel - 3].Name;
-                    view.ShowFiles(new Panel(str, FilePanel.Left));
+                    view.ShowFiles(new Panel(str, FilePanel.Left)); 
+                    view.SetStartCursor(view.FilePanel);
                     return false;
                 }
                 if (view.CursorOffsetOnLeftPanel == 3)
@@ -35,6 +36,7 @@ namespace Far
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Left));
+                    view.SetStartCursor(view.FilePanel);
                     return false;
                 }
                 item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4];
@@ -42,6 +44,7 @@ namespace Far
                 if (item.Extension == null)
                 {
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Left));
+                    view.SetStartCursor(view.FilePanel);
                 }
                 else if (item.Extension == "txt")
                 {
@@ -60,6 +63,7 @@ namespace Far
                 {
                     str = view.DriversOnRightPanel[view.CursorOffsetOnRightPanel - 3].Name;
                     view.ShowFiles(new Panel(str, FilePanel.Right));
+                    view.SetStartCursor(view.FilePanel);
                     return false;
                 }
                 if (view.CursorOffsetOnRightPanel == 3)
@@ -72,6 +76,7 @@ namespace Far
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Right));
+                    view.SetStartCursor(view.FilePanel);
                     return false;
                 }
 
@@ -80,6 +85,7 @@ namespace Far
                 if (item.Extension == null)
                 {
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Right));
+                    view.SetStartCursor(view.FilePanel);
                 }
                 else if (item.Extension == "txt")
                 {

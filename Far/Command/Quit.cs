@@ -1,4 +1,4 @@
-﻿namespace Far
+﻿namespace Far.Command
 {
     /// <summary>
     /// Выход из программы

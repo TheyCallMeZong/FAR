@@ -1,12 +1,9 @@
-﻿namespace Far
+﻿using Far.Command;
+
+namespace Far
 {
     public class Window
     {
-        /// <summary>
-        /// Открыта ли менюшка
-        /// </summary>
-        public static bool MessageIsOpen;
-
         /// <summary>
         /// Лист команд
         /// </summary>
@@ -18,7 +15,8 @@
                 new Open(),
                 new Quit(),
                 new Help(),
-                new CreateFile()
+                new CreateFile(),
+                new Edit()
             };
 
         /// <summary>
@@ -30,11 +28,6 @@
             while (!quit)
             {
                 var t = Console.ReadKey();
-                if (MessageIsOpen)
-                {
-                    HideMessage();
-                    MessageIsOpen = false;
-                }
                 foreach (var item in commands)
                 {
                     if (item.CanExecute(t))
@@ -52,10 +45,6 @@
         public static void HideMessage()
         {
             View view = View.GetInstance();
-            if (!MessageIsOpen)
-            {
-                return;
-            }
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White;
             if (view.DriversOnLeftPanel.Count == 0 && view.DriversOnRightPanel.Count == 0)
@@ -78,7 +67,7 @@
                 view.ShowDisk(FilePanel.Right);
                 view.ShowDisk(FilePanel.Left);
             }
-
+            view.SetStartCursor(view.FilePanel);
             VerticalLine verticalLine = new VerticalLine();
             verticalLine.DrawLine(1, view.ConsoleHeight - 3, view.ConsoleWidht / 2, '|');
         }

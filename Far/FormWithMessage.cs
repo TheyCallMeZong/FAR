@@ -46,7 +46,6 @@
             }
             Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 2, 1 + text.Length + (ConsoleHeight / 2 - ConsoleHeight / 4));
             Console.Write("Tab ChangePanel");
-            Window.MessageIsOpen = true;
         }
 
         public static string ShowCreateFilemessage(int ConsoleWidht, int ConsoleHeight)
@@ -58,7 +57,24 @@
             var result = Console.ReadLine();
 
             Console.CursorVisible = false;
-            Window.MessageIsOpen = true;
+            return result;
+        }
+
+        /// <summary>
+        /// отрисовка меню для изменение имени файла
+        /// </summary>
+        /// <param name="ConsoleWidht"></param>
+        /// <param name="ConsoleHeight"></param>
+        /// <returns></returns>
+        public static string ShowEditFileMessage(int ConsoleWidht, int ConsoleHeight)
+        {
+            Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8);
+            Console.WriteLine("Enter new file name:");
+            Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8 + 1);
+            Console.CursorVisible = true;
+            var result = Console.ReadLine();
+
+            Console.CursorVisible = false;
             return result;
         }
     }
