@@ -155,8 +155,8 @@ namespace Far
             OffsetForFileAndDir = 3;
             CursorOffsetOnLeftPanel = 4;
             CursorOffsetOnRightPanel = 4;
-            AbsolutleCursorOffseOnLeftPanel = 4;
-            AbsolutleCursorOffseOnRightPanel = 4;
+            AbsolutleCursorOffseOnLeftPanel = 0;
+            AbsolutleCursorOffseOnRightPanel = 0;
             DriversOnRightPanel = new List<DriveInfo>();
             DriversOnLeftPanel = new List<DriveInfo>();
             FilePanel = FilePanel.Left;
@@ -606,7 +606,7 @@ namespace Far
                 FilesAndDirectoriesOnRightPanel.Clear();
             }
             OffsetForFileAndDir = 3;
-            SetStartCursor(panel);
+            SetStartCursor(FilePanel);
         }
 
         /// <summary>
@@ -661,8 +661,6 @@ namespace Far
                 }
             }
         }
-
-
 
         /// <summary>
         /// Обрезание 

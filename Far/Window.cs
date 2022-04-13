@@ -5,6 +5,11 @@ namespace Far
     public class Window
     {
         /// <summary>
+        /// открыта ли менюшка
+        /// </summary>
+        public static bool MenuIsOpen;
+
+        /// <summary>
         /// Лист команд
         /// </summary>
         private List<ICommand<ConsoleKeyInfo>> commands = new List<ICommand<ConsoleKeyInfo>>()
@@ -34,6 +39,11 @@ namespace Far
             while (!quit)
             {
                 var t = Console.ReadKey(true);
+                if (MenuIsOpen)
+                {
+                    MenuIsOpen = false;
+                    HideMessage();
+                }
                 foreach (var item in commands)
                 {
                     if (item.CanExecute(t))

@@ -14,7 +14,7 @@
         {
             View view = View.GetInstance();
             view.ShowHelpMessage();
-
+            Window.MenuIsOpen = true;
             return false;
         }
     }
