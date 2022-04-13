@@ -19,7 +19,8 @@ namespace Far
                 new Rename(), 
                 new Edit(),
                 new RenMove(),
-                new Copy()
+                new Copy(),
+                new CreateDirectory()
             };
 
         /// <summary>
