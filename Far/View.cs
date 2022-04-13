@@ -71,11 +71,6 @@ namespace Far
         public string PathOnRightPanel { get; set; }
 
         /// <summary>
-        /// Открыта ли менюшка
-        /// </summary>
-        public bool HelpIsOpen;
-
-        /// <summary>
         /// Экземляр одиночик
         /// </summary>
         private static View instance;
@@ -223,7 +218,7 @@ namespace Far
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
                         var size = item.Size / 8 / 1024;
-                        if (size == 0)
+                        if (size == 0 && item.Size != 0)
                         {
                             size = 1;
                         }
@@ -261,7 +256,7 @@ namespace Far
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
                         var size = item.Size / 8 / 1024;
-                        if (size == 0)
+                        if (size == 0 && item.Size != 0)
                         {
                             size = 1;
                         }
@@ -557,80 +552,53 @@ namespace Far
         }
 
         /// <summary>
-        /// Отрисовка формы для окна "Помощь"
+        /// Отрисовка Хелпы
         /// </summary>
         public void ShowHelpMessage()
         {
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            HorizontalLine hl = new HorizontalLine();
-            hl.DrawLine(ConsoleWidht / 2 - ConsoleWidht / 4, ConsoleWidht / 2 + ConsoleWidht / 4, ConsoleHeight / 2 - ConsoleHeight / 4, '*');
-            hl.DrawLine(ConsoleWidht / 2 - ConsoleWidht / 4, ConsoleWidht / 2 + ConsoleWidht / 4, ConsoleHeight / 2 + ConsoleHeight / 4, '*');
-
-            VerticalLine vl = new VerticalLine();
-            vl.DrawLine(ConsoleHeight / 2 - ConsoleHeight / 4 + 1, ConsoleHeight / 2 + ConsoleHeight / 4, ConsoleWidht / 2 - ConsoleWidht / 4, '|');
-            vl.DrawLine(ConsoleHeight / 2 - ConsoleHeight / 4 + 1, ConsoleHeight / 2 + ConsoleHeight / 4, ConsoleWidht / 2 + ConsoleWidht / 4 - 1, '|');
-            
-            for (int i = 2; i < ConsoleHeight / 2; i++)
-            {
-                Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 1, i + ConsoleHeight / 4);
-                Console.Write(string.Concat(Enumerable.Repeat(' ', ConsoleWidht / 2 - 2)));
-            }
-            Help();
+            FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
+            FormWithMessage.ShowHelpMessage(ConsoleWidht, ConsoleHeight, menu);
         }
 
         /// <summary>
-        /// Отрисвока помощи
+        /// Отрисовка создания файла
         /// </summary>
-        private void Help()
+        public void ShowCreateFile()
         {
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-
-            for (int i = 0; i < menu.Length; i++)
+            FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
+            var fileName = FormWithMessage.ShowCreateFilemessage(ConsoleWidht, ConsoleHeight);
+            if (string.IsNullOrEmpty(fileName))
             {
-                Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 2, 1 + i + (ConsoleHeight / 2 - ConsoleHeight / 4));
-                Console.WriteLine(menu[i]);
-            }
-            Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 2, 1 + menu.Length + (ConsoleHeight / 2 - ConsoleHeight / 4));
-            Console.Write("Tab ChangePanel");
-            HelpIsOpen = true;
-        }
-
-        /// <summary>
-        /// Убрать окно помощи
-        /// </summary>
-        public void HideMessage()
-        {
-            if (!HelpIsOpen)
-            {
+                Window.HideMessage();
                 return;
             }
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.ForegroundColor = ConsoleColor.White;
-            if (DriversOnLeftPanel.Count == 0 && DriversOnRightPanel.Count == 0)
+            try
             {
-                ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
-                ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
+                if (FilePanel == FilePanel.Left)
+                {
+                    if (!File.Exists(PathOnLeftPanel + "\\" + fileName))
+                    {
+                        var fs = File.Create(PathOnLeftPanel + "\\" + fileName);
+                        fs.Close();
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(PathOnRightPanel + "\\" + fileName))
+                    {
+                        var fs = File.Create(PathOnRightPanel + "\\" + fileName);
+                        fs.Close();
+                    }
+                }
             }
-            else if (DriversOnLeftPanel.Count == 0 && DriversOnRightPanel.Count != 0)
+            catch
             {
-                ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
-                ShowDisk(FilePanel.Right);
+                
             }
-            else if (DriversOnLeftPanel.Count != 0 && DriversOnRightPanel.Count == 0)
+            finally
             {
-                ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
-                ShowDisk(FilePanel.Left);
+                Window.HideMessage();
             }
-            else
-            {
-                ShowDisk(FilePanel.Right);
-                ShowDisk(FilePanel.Left);
-            }
-            
-            VerticalLine verticalLine = new VerticalLine();
-            verticalLine.DrawLine(1, ConsoleHeight - 3, ConsoleWidht / 2, '|');
         }
     }
 }

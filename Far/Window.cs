@@ -2,6 +2,14 @@
 {
     public class Window
     {
+        /// <summary>
+        /// Открыта ли менюшка
+        /// </summary>
+        public static bool MessageIsOpen;
+
+        /// <summary>
+        /// Лист команд
+        /// </summary>
         private List<ICommand<ConsoleKeyInfo>> commands = new List<ICommand<ConsoleKeyInfo>>()
             {
                 new DownMove(),
@@ -9,20 +17,23 @@
                 new ChangePanel(),
                 new Open(),
                 new Quit(),
-                new Help()
+                new Help(),
+                new CreateFile()
             };
 
+        /// <summary>
+        /// Точка выполнения программы
+        /// </summary>
         public void Run()
         {
-            View view = View.GetInstance();
             bool quit = false;
             while (!quit)
             {
                 var t = Console.ReadKey();
-                if (view.HelpIsOpen)
+                if (MessageIsOpen)
                 {
-                    view.HideMessage();
-                    view.HelpIsOpen = false;
+                    HideMessage();
+                    MessageIsOpen = false;
                 }
                 foreach (var item in commands)
                 {
@@ -33,6 +44,43 @@
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Убрать окно сообщений
+        /// </summary>
+        public static void HideMessage()
+        {
+            View view = View.GetInstance();
+            if (!MessageIsOpen)
+            {
+                return;
+            }
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.ForegroundColor = ConsoleColor.White;
+            if (view.DriversOnLeftPanel.Count == 0 && view.DriversOnRightPanel.Count == 0)
+            {
+                view.ShowFiles(new Panel(view.PathOnLeftPanel, FilePanel.Left));
+                view.ShowFiles(new Panel(view.PathOnRightPanel, FilePanel.Right));
+            }
+            else if (view.DriversOnLeftPanel.Count == 0 && view.DriversOnRightPanel.Count != 0)
+            {
+                view.ShowFiles(new Panel(view.PathOnLeftPanel, FilePanel.Left));
+                view.ShowDisk(FilePanel.Right);
+            }
+            else if (view.DriversOnLeftPanel.Count != 0 && view.DriversOnRightPanel.Count == 0)
+            {
+                view.ShowFiles(new Panel(view.PathOnRightPanel, FilePanel.Right));
+                view.ShowDisk(FilePanel.Left);
+            }
+            else
+            {
+                view.ShowDisk(FilePanel.Right);
+                view.ShowDisk(FilePanel.Left);
+            }
+
+            VerticalLine verticalLine = new VerticalLine();
+            verticalLine.DrawLine(1, view.ConsoleHeight - 3, view.ConsoleWidht / 2, '|');
         }
     }
 }
