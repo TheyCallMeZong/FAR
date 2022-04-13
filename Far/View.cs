@@ -26,12 +26,22 @@ namespace Far
         public int ConsoleHeight { get; set; }
 
         /// <summary>
-        /// Отступ курсора для левой панели
+        /// Отступ курсора относительно окна панели при скролинге для левой панели
         /// </summary>
         public int CursorOffsetOnLeftPanel { get; set; }
 
         /// <summary>
-        /// Отступ курсора для правой панели
+        /// Абсолютное положение курсора для левой панели
+        /// </summary>
+        public int AbsolutleCursorOffseOnLeftPanel { get; set; }
+
+        /// <summary>
+        /// Абсолютное положение курсора для правой панели
+        /// </summary>
+        public int AbsolutleCursorOffseOnRightPanel { get; set; }
+
+        /// <summary>
+        /// Отступ курсора относительно окна панели при скролинге для правой панели
         /// </summary>
         public int CursorOffsetOnRightPanel { get; set; }
 
@@ -87,6 +97,16 @@ namespace Far
             }
             return instance;
         }
+
+        /// <summary>
+        /// отступ для расширения и размера слева
+        /// </summary>
+        private int maxleft;
+
+        /// <summary>
+        /// отступ для расширения и размера слева
+        /// </summary>
+        private int maxright;
 
         /// <summary>
         /// Дескриптор окна
@@ -199,21 +219,30 @@ namespace Far
             if (panel.FilePanel == FilePanel.Left)
             {
                 FilesAndDirectoriesOnLeftPanel = panel.Files;
-                Console.SetCursorPosition(1 + GetLeftOffset(panel), OffsetForFileAndDir);
-                Console.WriteLine("Extension Size");
+                var files = panel.Files.Where(x => x.Extension != null).ToList();
+                if (files.Count != 0)
+                {
+                    maxleft = files.MaxBy(x => x.Extension.Length).Extension.Length;
+                    if (maxleft < "Extension".Length)
+                    {
+                        maxleft = "Extension".Length;
+                    }
+                }
+                Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
+                Console.WriteLine("|Extension ");
+                Console.SetCursorPosition(2 + maxleft + GetLeftOffset(panel), OffsetForFileAndDir);
+                Console.WriteLine(" | Size");
                 Console.SetCursorPosition(1, OffsetForFileAndDir++);
                 Console.WriteLine("[..]");
                 Console.SetCursorPosition(1, OffsetForPath);
                 
                 Console.Write(panel.Path);
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                Console.WriteLine("|\t\t|\t\t|");
                 foreach (var item in panel.Files)
                 {
                     Console.SetCursorPosition(1, OffsetForFileAndDir++);
-                    Console.Write(item.Name);
+                    Console.Write(Substring(item.Name));
                     Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                    Console.WriteLine("|\t\t|\t\t|");
                     if (!string.IsNullOrEmpty(item.Extension))
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
@@ -222,7 +251,9 @@ namespace Far
                         {
                             size = 1;
                         }
-                        Console.Write("|" + item.Extension + "\t| " + size + " KByte");
+                        Console.Write("|" + item.Extension);
+                        Console.SetCursorPosition(2 + maxleft + GetLeftOffset(panel), OffsetForFileAndDir);
+                        Console.WriteLine($" | {size}KByte");
                         
                         OffsetForFileAndDir++;
                     }
@@ -234,14 +265,24 @@ namespace Far
             else
             {
                 FilesAndDirectoriesOnRightPanel = panel.Files;
+                var files = panel.Files.Where(x => x.Extension != null).ToList();
+                if (files.Count != 0)
+                {
+                    maxright = files.MaxBy(x => x.Extension.Length).Extension.Length;
+                    if (maxright < "Extension".Length)
+                    {
+                        maxright = "Extension".Length;
+                    }
+                }
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                Console.WriteLine(" Extension Size");
+                Console.WriteLine("|Extension ");
+                Console.SetCursorPosition(2 + maxright + GetLeftOffset(panel), OffsetForFileAndDir);
+                Console.WriteLine(" | Size");
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForFileAndDir++);
                 Console.WriteLine("[..]");
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForPath);
                 Console.Write(panel.Path);
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                Console.WriteLine("|\t\t|\t\t|");
                 foreach (var item in panel.Files)
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
@@ -249,9 +290,8 @@ namespace Far
                         return;
                     }
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForFileAndDir++);
-                    Console.Write(item.Name);
-                    Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                    Console.WriteLine("|\t\t|\t\t|");
+                    Console.Write(Substring(item.Name));
+                    Console.SetCursorPosition(2 + GetLeftOffset(panel), OffsetForFileAndDir);
                     if (!string.IsNullOrEmpty(item.Extension))
                     {
                         Console.SetCursorPosition(GetLeftOffset(panel), --OffsetForFileAndDir);
@@ -260,7 +300,9 @@ namespace Far
                         {
                             size = 1;
                         }
-                        Console.Write("|" + item.Extension + "\t| " + size + " KByte");
+                        Console.Write("|" + item.Extension);
+                        Console.SetCursorPosition(2 + maxright + GetLeftOffset(panel), OffsetForFileAndDir);
+                        Console.WriteLine($" | {size}KByte");
                         OffsetForFileAndDir++;
                     }
                 }
@@ -272,6 +314,21 @@ namespace Far
         }
 
         /// <summary>
+        /// Обрезание 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private string Substring(string str)
+        {
+            if (str.Length > ConsoleWidht / 5)
+            {
+                str = str.Substring(0, ConsoleWidht / 5) + "..";
+            }
+            return str;
+        }
+
+        /// <summary>
         /// получение отступа для отображение расширения и размера файла
         /// </summary>
         /// <param name="panel"></param>
@@ -280,11 +337,11 @@ namespace Far
         {
             if (panel.FilePanel == FilePanel.Left)
             {
-                return ConsoleWidht / 2 - 50;
+                return ConsoleWidht / 2 - ConsoleWidht / 4;
             }
             else
             {
-                return ConsoleWidht - 50;
+                return ConsoleWidht - ConsoleWidht / 4;
             }
         }
 
@@ -294,6 +351,8 @@ namespace Far
         /// <param name="panel"></param>
         public void SetStartCursor(FilePanel panel)
         {
+            string ext;
+            long size;
             if (panel == FilePanel.Left)
             {
                 if (FilesAndDirectoriesOnLeftPanel.Count == 0 && DriversOnLeftPanel.Count == 0)
@@ -314,9 +373,13 @@ namespace Far
                 }
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                 var item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
-
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                if (FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension != null)
+                {
+                    ShowExt(FilePanel.Left);
+                }
+                Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
+                Console.WriteLine(Substring(item));
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
             else
@@ -340,9 +403,13 @@ namespace Far
 
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                 var item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
-
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                if (FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension != null)
+                {
+                    ShowExt(FilePanel.Right);
+                }
+                Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
+                Console.WriteLine(Substring(item));
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
         }
@@ -354,17 +421,19 @@ namespace Far
         public void MoveCusrorDown()
         {
             string item;
+            string ext;
+            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (DriversOnLeftPanel.Count != 0 && CursorOffsetOnLeftPanel != DriversOnLeftPanel.Count + 2)
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(1, ++CursorOffsetOnLeftPanel);
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     return;
                 }
@@ -381,12 +450,15 @@ namespace Far
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
+                    ShowExt(FilePanel.Left);
                 }
                 Console.SetCursorPosition(1, ++CursorOffsetOnLeftPanel);
                 item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                ShowExt(FilePanel.Left);
+                Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
+                Console.WriteLine(Substring(item));
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
             else
@@ -395,11 +467,11 @@ namespace Far
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, ++CursorOffsetOnRightPanel);
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     return;
                 }
@@ -416,12 +488,15 @@ namespace Far
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                     item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
+                    ShowExt(FilePanel.Right);
                 }
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, ++CursorOffsetOnRightPanel);
                 item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                ShowExt(FilePanel.Right);
+                Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
+                Console.WriteLine(Substring(item));
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
         }
@@ -433,13 +508,16 @@ namespace Far
         public void MoveCusrorUp()
         {
             string item;
+            string ext;
+            long size;
             if (FilePanel == FilePanel.Left)
             {
                 if (CursorOffsetOnLeftPanel == 4 && DriversOnLeftPanel.Count == 0)
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
+                    ShowExt(FilePanel.Left);
                     Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("[..]");
@@ -450,11 +528,11 @@ namespace Far
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     return;
                 }
@@ -464,11 +542,15 @@ namespace Far
                 }
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                 item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
-                Console.WriteLine(item);
+                ShowExt(FilePanel.Left);
+                Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
+                Console.WriteLine(Substring(item));
                 Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
                 item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                ShowExt(FilePanel.Left);
+                Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
+                Console.WriteLine(Substring(item));
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
             else
@@ -477,7 +559,8 @@ namespace Far
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                     item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
+                    ShowExt(FilePanel.Right);
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("[..]");
@@ -488,11 +571,11 @@ namespace Far
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(item);
+                    Console.WriteLine(Substring(item));
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     return;
                 }
@@ -502,11 +585,13 @@ namespace Far
                 }
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                 item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
-                Console.WriteLine(item);
+                Console.WriteLine(Substring(item));
+                ShowExt(FilePanel.Right);
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
                 item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(item);
+                Console.WriteLine(Substring(item));
+                ShowExt(FilePanel.Right);
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
         }
@@ -557,6 +642,50 @@ namespace Far
         {
             FormWithMessage.Show(ConsoleWidht, ConsoleHeight);
             FormWithMessage.ShowHelpMessage(ConsoleWidht, ConsoleHeight, menu);
+        }
+
+        /// <summary>
+        /// вынес повторяющийся код
+        /// </summary>
+        /// <param name="panel"></param>
+        public void ShowExt(FilePanel panel)
+        {
+            string ext;
+            long size;
+            if (panel == FilePanel.Left)
+            {
+                if (FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension != null)
+                {
+                    ext = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension;
+                    size = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Size;
+                    Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4, CursorOffsetOnLeftPanel);
+                    Console.WriteLine("|" + ext);
+                    size = size / 8 / 1024;
+                    if (size == 0 && FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Size != 0)
+                    {
+                        size = 1;
+                    }
+                    Console.SetCursorPosition(maxleft + 2 + ConsoleWidht / 2 - ConsoleWidht / 4, CursorOffsetOnLeftPanel);
+                    Console.WriteLine($" | {size}KByte");
+                }
+            }
+            else
+            {
+                if (FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension != null)
+                {
+                    ext = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension;
+                    size = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Size;
+                    Console.SetCursorPosition(ConsoleWidht - ConsoleWidht / 4, CursorOffsetOnRightPanel);
+                    Console.WriteLine("|" + ext);
+                    Console.SetCursorPosition(maxright + 2 + ConsoleWidht - ConsoleWidht / 4, CursorOffsetOnRightPanel);
+                    size = size / 8 / 1024;
+                    if (size == 0 && FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Size != 0)
+                    {
+                        size = 1;
+                    }
+                    Console.WriteLine(" | " + size + "KByte");
+                }
+            }
         }
     }
 }

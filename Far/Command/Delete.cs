@@ -42,7 +42,7 @@
                     }
                     else
                     {
-                        Directory.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
+                        Directory.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, true);
                     }
                 }
             }

@@ -46,7 +46,7 @@ namespace Far.Command
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Left));
                     view.SetStartCursor(view.FilePanel);
                 }
-                else if (item.Extension == "txt")
+                else if (item.Extension == ".txt")
                 {
                     if (File.Exists(item.Path + "\\" + item.Name))
                     {
@@ -87,7 +87,7 @@ namespace Far.Command
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Right));
                     view.SetStartCursor(view.FilePanel);
                 }
-                else if (item.Extension == "txt")
+                else if (item.Extension == ".txt")
                 {
                     if (File.Exists(item.Path + "\\" + item.Name))
                     {

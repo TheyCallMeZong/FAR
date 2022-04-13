@@ -69,7 +69,7 @@
         /// <returns></returns>
         private string GetExtension(string str)
         {
-            string ext = str.Substring(str.LastIndexOf('.') + 1);
+            string ext = str.Substring(str.LastIndexOf('.'));
             ext = ext.Replace(Path, "");
             return ext;
         }
