@@ -13,7 +13,60 @@
         public bool Execute()
         {
             View view = View.GetInstance();
-            view.ShowEditMessage();
+            FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
+            var newFileName = FormWithMessage.ShowMessage(view.ConsoleWidht, view.ConsoleHeight, "Enter new file name:");
+            if (string.IsNullOrEmpty(newFileName))
+            {
+                Window.HideMessage();
+                return false;
+            }
+            try
+            {
+                if (view.FilePanel == FilePanel.Left)
+                {
+                    var file = view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name;
+                    if (File.Exists(file))
+                    {
+                        if (!File.Exists(view.PathOnLeftPanel + "\\" + newFileName))
+                        {
+                            File.Move(file, view.PathOnLeftPanel + "\\" + newFileName);
+                        }
+                    }
+                    else if (Directory.Exists(file))
+                    {
+                        if (!Directory.Exists(view.PathOnLeftPanel + "\\" + newFileName))
+                        {
+                            Directory.Move(file, view.PathOnLeftPanel + "\\" + newFileName);
+                        }
+                    }
+                }
+                else
+                {
+                    var file = view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name;
+                    if (File.Exists(file))
+                    {
+                        if (!File.Exists(view.PathOnRightPanel + "\\" + newFileName))
+                        {
+                            File.Move(file, view.PathOnRightPanel + "\\" + newFileName);
+                        }
+                    }
+                    else if (Directory.Exists(file))
+                    {
+                        if (!Directory.Exists(view.PathOnRightPanel + "\\" + newFileName))
+                        {
+                            Directory.Move(file, view.PathOnRightPanel + "\\" + newFileName);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                Window.HideMessage();
+            }
             return false;
         }
     }

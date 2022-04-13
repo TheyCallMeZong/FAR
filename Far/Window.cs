@@ -18,6 +18,7 @@ namespace Far
                 new CreateFile(),
                 new Rename(), 
                 new Edit(),
+                new RenMove(),
                 new Copy()
             };
 
@@ -29,7 +30,7 @@ namespace Far
             bool quit = false;
             while (!quit)
             {
-                var t = Console.ReadKey();
+                var t = Console.ReadKey(true);
                 foreach (var item in commands)
                 {
                     if (item.CanExecute(t))

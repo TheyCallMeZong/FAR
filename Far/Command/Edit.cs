@@ -18,13 +18,16 @@ namespace Far.Command
                 item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4];
                 if (item.Extension == "txt")
                 {
-                    if (File.Exists(item.Path + "\\" + item.Name))
-                    {
-                        Process process = new();
-                        process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
-                        process.StartInfo.Arguments = item.Path + "\\" + item.Name;
-                        process.Start();
-                    }
+                    Process process = new();
+                    process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
+                    process.StartInfo.Arguments = item.Path + "\\" + item.Name;
+                    process.Start();
+                }
+                if (item.Extension == ".exe")
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = item.Path;
+                    process.Start();
                 }
             }
             else
@@ -33,13 +36,16 @@ namespace Far.Command
 
                 if (item.Extension == "txt")
                 {
-                    if (File.Exists(item.Path + "\\" + item.Name))
-                    {
-                        Process process = new();
-                        process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
-                        process.StartInfo.Arguments = item.Path + "\\" + item.Name;
-                        process.Start();
-                    }
+                    Process process = new();
+                    process.StartInfo.FileName = @"C:\Windows\System32\notepad.exe";
+                    process.StartInfo.Arguments = item.Path + "\\" + item.Name;
+                    process.Start();
+                }
+                if (item.Extension == ".exe")
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = item.Path;
+                    process.Start();
                 }
             }
             return false;
