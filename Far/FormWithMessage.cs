@@ -48,10 +48,17 @@
             Console.Write("Tab ChangePanel");
         }
 
-        public static string ShowCreateFilemessage(int ConsoleWidht, int ConsoleHeight)
+        /// <summary>
+        /// отрисовка формы с текстом
+        /// </summary>
+        /// <param name="ConsoleWidht"></param>
+        /// <param name="ConsoleHeight"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ShowMessage(int ConsoleWidht, int ConsoleHeight, string text)
         {
             Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8);
-            Console.WriteLine("Enter file name:");
+            Console.WriteLine(text);
             Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8 + 1);
             Console.CursorVisible = true;
             var result = Console.ReadLine();
@@ -61,21 +68,16 @@
         }
 
         /// <summary>
-        /// отрисовка меню для изменение имени файла
+        /// отрисовка окна с выбором
         /// </summary>
         /// <param name="ConsoleWidht"></param>
         /// <param name="ConsoleHeight"></param>
-        /// <returns></returns>
-        public static string ShowEditFileMessage(int ConsoleWidht, int ConsoleHeight)
+        public static void ShowYN(int ConsoleWidht, int ConsoleHeight, string text)
         {
             Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8);
-            Console.WriteLine("Enter new file name:");
+            Console.Write(text);
             Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 8, ConsoleHeight / 2 - ConsoleHeight / 8 + 1);
-            Console.CursorVisible = true;
-            var result = Console.ReadLine();
-
-            Console.CursorVisible = false;
-            return result;
+            Console.Write("Y - Yes, N - No");
         }
     }
 }

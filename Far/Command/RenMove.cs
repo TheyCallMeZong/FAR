@@ -1,13 +1,13 @@
 ﻿namespace Far.Command
 {
     /// <summary>
-    /// копирование файла с одной панели на другую
+    /// удаление с переносом
     /// </summary>
-    public class Copy : ICommand<ConsoleKeyInfo>
+    public class RenMove : ICommand<ConsoleKeyInfo>
     {
         public bool CanExecute(ConsoleKeyInfo item)
         {
-            return item.Key == ConsoleKey.F5;
+            return item.Key == ConsoleKey.F6;
         }
 
         public bool Execute()
@@ -27,7 +27,7 @@
                             if (click.Key == ConsoleKey.Y)
                             {
                                 File.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
-                                File.Copy(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name, view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
+                                File.Move(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name, view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
                             }
                         }
                     }
@@ -38,18 +38,14 @@
                 }
                 else
                 {
-                    if (File.Exists(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name))
+                    if (File.Exists(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name))
                     {
-                        if (File.Exists(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name))
+                        FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
+                        FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, "The file exists. Do you want to replace it?");
+                        var click = Console.ReadKey();
+                        if (File.Exists(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name))
                         {
-                            FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
-                            FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, "The file exists. Do you want to replace it?");
-                            var click = Console.ReadKey();
-                            if (click.Key == ConsoleKey.Y)
-                            {
-                                File.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
-                                File.Copy(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
-                            }
+                            File.Move(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
                         }
                     }
                     else
