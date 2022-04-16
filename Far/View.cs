@@ -70,6 +70,16 @@ namespace Far
         /// </summary>
         public FilePanel FilePanel;
 
+        /// <summary> 
+        /// страница при скролинге
+        /// </summary>
+        public int PageInScrollingInRightPanel { get; set; }
+
+        /// <summary> 
+        /// страница при скролинге
+        /// </summary>
+        public int PageInScrollingInLeftPanel { get; set; }
+
         /// <summary>
         /// Путь
         /// </summary>
@@ -125,6 +135,32 @@ namespace Far
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hMenu"></param>
+        /// <param name="nPosition"></param>
+        /// <param name="wFlags"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        private static extern int DeleteMenu(IntPtr hMenu, int nPosition, int wFlags);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="bRevert"></param>
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+        /// <summary>
+        /// какие то переменные
+        /// </summary>
+        private const int MF_BYCOMMAND = 0x00000000;
+        private const int SC_MINIMIZE = 0xF020;
+        private const int SC_MAXIMIZE = 0xF030;
+        private const int SC_SIZE = 0xF000;
+
+        /// <summary>
         /// Максимальное значение для показа окна
         /// </summary>
         private const int MAXSIZE = 3;
@@ -139,7 +175,7 @@ namespace Far
             "F6 Renmove",
             "F7 CreateDirectory",
             "F8 Delete",
-            "F9 Tree",
+            "<3",
             "F10 Exit"
         };
         /// <summary>
@@ -149,8 +185,8 @@ namespace Far
         {
             ConsoleWidht = Console.WindowWidth;
             ConsoleHeight = Console.WindowHeight;
-            Console.BufferHeight = ConsoleHeight;
             Console.BufferWidth = ConsoleWidht + 1;
+            Console.BufferHeight = ConsoleHeight;
             OffsetForPath = 1;
             OffsetForFileAndDir = 3;
             CursorOffsetOnLeftPanel = 4;
@@ -160,14 +196,25 @@ namespace Far
             DriversOnRightPanel = new List<DriveInfo>();
             DriversOnLeftPanel = new List<DriveInfo>();
             FilePanel = FilePanel.Left;
+            PageInScrollingInRightPanel = 0;
+            PageInScrollingInLeftPanel = 0;
         }
-
+        
         /// <summary>
         /// Устанавливаем окно во весь экран и меняем цвет текста 
         /// </summary>
         public void SetWindow()
         {
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+            IntPtr handle = GetConsoleWindow();
+            IntPtr sysMenu = GetSystemMenu(handle, false);
+
+            if (handle != IntPtr.Zero)
+            {
+                DeleteMenu(sysMenu, SC_MINIMIZE, MF_BYCOMMAND);
+                DeleteMenu(sysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+                DeleteMenu(sysMenu, SC_SIZE, MF_BYCOMMAND);
+            }
             ShowWindow(GetConsoleWindow(), MAXSIZE);
             Console.CursorVisible = false;
             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -200,6 +247,9 @@ namespace Far
             SetMenu();
         }
 
+        /// <summary>
+        /// отображение меню
+        /// </summary>
         public void SetMenu()
         {
             Console.SetCursorPosition(1, ConsoleHeight - 3);
@@ -237,10 +287,11 @@ namespace Far
                 Console.SetCursorPosition(1, OffsetForFileAndDir++);
                 Console.WriteLine("[..]");
                 Console.SetCursorPosition(1, OffsetForPath);
-                
+
                 Console.Write(panel.Path);
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                foreach (var item in panel.Files)
+                files = panel.Files.Skip(PageInScrollingInLeftPanel * (ConsoleHeight - 8)).ToList();
+                foreach (var item in files)
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
                     {
@@ -260,13 +311,17 @@ namespace Far
                         Console.Write("|" + item.Extension);
                         Console.SetCursorPosition(2 + maxleft + GetLeftOffset(panel), OffsetForFileAndDir);
                         Console.WriteLine($" | {size}KByte");
-                        
+
                         OffsetForFileAndDir++;
                     }
                 }
                 PathOnLeftPanel = panel.Path;
                 DriversOnLeftPanel.Clear();
                 CursorOffsetOnLeftPanel = 4;
+                if (PageInScrollingInLeftPanel == 0)
+                {
+                    AbsolutleCursorOffseOnLeftPanel = 0;
+                }
             }
             else
             {
@@ -289,7 +344,8 @@ namespace Far
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, OffsetForPath);
                 Console.Write(panel.Path);
                 Console.SetCursorPosition(GetLeftOffset(panel), OffsetForFileAndDir);
-                foreach (var item in panel.Files)
+                files = panel.Files.Skip(PageInScrollingInRightPanel * (ConsoleHeight - 8)).ToList();
+                foreach (var item in files)
                 {
                     if (OffsetForFileAndDir == ConsoleHeight - 4)
                     {
@@ -315,6 +371,10 @@ namespace Far
                 PathOnRightPanel = panel.Path;
                 DriversOnRightPanel.Clear();
                 CursorOffsetOnRightPanel = 4;
+                if (PageInScrollingInRightPanel == 0)
+                {
+                    AbsolutleCursorOffseOnRightPanel = 0;
+                }
             }
             OffsetForFileAndDir = 3;
         }
@@ -344,9 +404,9 @@ namespace Far
                     return;
                 }
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
-                var item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                var item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                if (FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension != null)
+                if (FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Extension != null)
                 {
                     ShowExt(FilePanel.Left);
                 }
@@ -374,9 +434,9 @@ namespace Far
                 }
 
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
-                var item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                var item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
-                if (FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension != null)
+                if (FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Extension != null)
                 {
                     ShowExt(FilePanel.Right);
                 }
@@ -395,12 +455,28 @@ namespace Far
             string item;
             if (FilePanel == FilePanel.Left)
             {
+                if (PageInScrollingInLeftPanel > 0 && AbsolutleCursorOffseOnLeftPanel == FilesAndDirectoriesOnLeftPanel.Count - 1)
+                {
+                    return;
+                }
+                if (CursorOffsetOnLeftPanel == ConsoleHeight - 5)
+                {
+                    PageInScrollingInLeftPanel++;
+                    ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
+                    Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
+                    item = FilesAndDirectoriesOnLeftPanel[++AbsolutleCursorOffseOnLeftPanel].Name;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(item);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    return;
+                }
                 if (DriversOnLeftPanel.Count != 0 && CursorOffsetOnLeftPanel != DriversOnLeftPanel.Count + 2)
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(1, ++CursorOffsetOnLeftPanel);
+                    AbsolutleCursorOffseOnLeftPanel++;
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(Substring(item));
@@ -419,12 +495,17 @@ namespace Far
                 else if (CursorOffsetOnLeftPanel != 3)
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
-                    item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                    item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                     Console.WriteLine(Substring(item));
                     ShowExt(FilePanel.Left);
                 }
+                if (CursorOffsetOnLeftPanel == ConsoleHeight - 5)
+                {
+                    return;
+                }
                 Console.SetCursorPosition(1, ++CursorOffsetOnLeftPanel);
-                item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                AbsolutleCursorOffseOnLeftPanel++;
+                item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
                 ShowExt(FilePanel.Left);
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
@@ -433,12 +514,29 @@ namespace Far
             }
             else
             {
+                if (PageInScrollingInRightPanel > 0 && AbsolutleCursorOffseOnRightPanel == FilesAndDirectoriesOnRightPanel.Count - 1)
+                {
+                    return;
+                }
+                if (CursorOffsetOnRightPanel == ConsoleHeight - 5)
+                {
+                    PageInScrollingInRightPanel++;
+                    ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
+                    Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
+                    item = FilesAndDirectoriesOnRightPanel[++AbsolutleCursorOffseOnRightPanel].Name;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(item);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    return;
+                }
+                
                 if (DriversOnRightPanel.Count != 0 && CursorOffsetOnRightPanel != DriversOnRightPanel.Count + 2)
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, ++CursorOffsetOnRightPanel);
+                    AbsolutleCursorOffseOnRightPanel++;
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(Substring(item));
@@ -457,12 +555,13 @@ namespace Far
                 else if (CursorOffsetOnRightPanel != 3 && DriversOnRightPanel.Count == 0)
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
-                    item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                    item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                     Console.WriteLine(Substring(item));
                     ShowExt(FilePanel.Right);
                 }
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, ++CursorOffsetOnRightPanel);
-                item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                AbsolutleCursorOffseOnRightPanel++;
+                item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
                 ShowExt(FilePanel.Right);
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
@@ -470,7 +569,6 @@ namespace Far
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
             }
         }
-
         /// <summary>
         /// перемещение курсора вверх
         /// </summary>
@@ -480,13 +578,28 @@ namespace Far
             string item;
             if (FilePanel == FilePanel.Left)
             {
+                if (PageInScrollingInLeftPanel > 0 && CursorOffsetOnLeftPanel == 4)
+                {
+                    var cursor = AbsolutleCursorOffseOnLeftPanel;
+                    PageInScrollingInLeftPanel--;
+                    ShowFiles(new Panel(PathOnLeftPanel, FilePanel.Left));
+                    AbsolutleCursorOffseOnLeftPanel = cursor;
+                    item = FilesAndDirectoriesOnLeftPanel[--AbsolutleCursorOffseOnLeftPanel].Name;
+                    Console.SetCursorPosition(1, ConsoleHeight - 5);
+                    CursorOffsetOnLeftPanel = ConsoleHeight - 5;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(item);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    return;
+                }
                 if (CursorOffsetOnLeftPanel == 4 && DriversOnLeftPanel.Count == 0)
                 {
                     Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
-                    item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                    item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                     Console.WriteLine(Substring(item));
                     ShowExt(FilePanel.Left);
                     Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
+                    AbsolutleCursorOffseOnLeftPanel--;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("[..]");
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -498,6 +611,7 @@ namespace Far
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
+                    AbsolutleCursorOffseOnLeftPanel--;
                     item = DriversOnLeftPanel[CursorOffsetOnLeftPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(Substring(item));
@@ -509,12 +623,13 @@ namespace Far
                     return;
                 }
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
-                item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                 ShowExt(FilePanel.Left);
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
                 Console.WriteLine(Substring(item));
                 Console.SetCursorPosition(1, --CursorOffsetOnLeftPanel);
-                item = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Name;
+                AbsolutleCursorOffseOnLeftPanel--;
+                item = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
                 ShowExt(FilePanel.Left);
                 Console.SetCursorPosition(1, CursorOffsetOnLeftPanel);
@@ -523,13 +638,28 @@ namespace Far
             }
             else
             {
+                if (PageInScrollingInRightPanel > 0 && CursorOffsetOnRightPanel == 4)
+                {
+                    var cursor = AbsolutleCursorOffseOnRightPanel;
+                    PageInScrollingInRightPanel--;
+                    ShowFiles(new Panel(PathOnRightPanel, FilePanel.Right));
+                    AbsolutleCursorOffseOnRightPanel = cursor;
+                    item = FilesAndDirectoriesOnRightPanel[--AbsolutleCursorOffseOnRightPanel].Name;
+                    Console.SetCursorPosition(ConsoleWidht / 2 + 1, ConsoleHeight - 5);
+                    CursorOffsetOnRightPanel = ConsoleHeight - 5;
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(item);
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    return;
+                }
                 if (CursorOffsetOnRightPanel == 4 && DriversOnRightPanel.Count == 0)
                 {
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
-                    item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                    item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                     Console.WriteLine(Substring(item));
                     ShowExt(FilePanel.Right);
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
+                    AbsolutleCursorOffseOnRightPanel--;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("[..]");
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -541,6 +671,7 @@ namespace Far
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.WriteLine(Substring(item));
                     Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
+                    AbsolutleCursorOffseOnRightPanel--;
                     item = DriversOnRightPanel[CursorOffsetOnRightPanel - 3].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(Substring(item));
@@ -552,11 +683,12 @@ namespace Far
                     return;
                 }
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, CursorOffsetOnRightPanel);
-                item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                 Console.WriteLine(Substring(item));
                 ShowExt(FilePanel.Right);
                 Console.SetCursorPosition(ConsoleWidht / 2 + 1, --CursorOffsetOnRightPanel);
-                item = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Name;
+                AbsolutleCursorOffseOnRightPanel--;
+                item = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Name;
                 Console.BackgroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(Substring(item));
                 ShowExt(FilePanel.Right);
@@ -613,14 +745,14 @@ namespace Far
             long size;
             if (panel == FilePanel.Left)
             {
-                if (FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension != null)
+                if (FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Extension != null)
                 {
-                    ext = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Extension;
-                    size = FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Size;
+                    ext = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Extension;
+                    size = FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Size;
                     Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4, CursorOffsetOnLeftPanel);
                     Console.WriteLine("|" + ext);
                     size = size / 8 / 1024;
-                    if (size == 0 && FilesAndDirectoriesOnLeftPanel[CursorOffsetOnLeftPanel - 4].Size != 0)
+                    if (size == 0 && FilesAndDirectoriesOnLeftPanel[AbsolutleCursorOffseOnLeftPanel].Size != 0)
                     {
                         size = 1;
                     }
@@ -630,15 +762,15 @@ namespace Far
             }
             else
             {
-                if (FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension != null)
+                if (FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Extension != null)
                 {
-                    ext = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Extension;
-                    size = FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Size;
+                    ext = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Extension;
+                    size = FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Size;
                     Console.SetCursorPosition(ConsoleWidht - ConsoleWidht / 4, CursorOffsetOnRightPanel);
                     Console.WriteLine("|" + ext);
                     Console.SetCursorPosition(maxright + 2 + ConsoleWidht - ConsoleWidht / 4, CursorOffsetOnRightPanel);
                     size = size / 8 / 1024;
-                    if (size == 0 && FilesAndDirectoriesOnRightPanel[CursorOffsetOnRightPanel - 4].Size != 0)
+                    if (size == 0 && FilesAndDirectoriesOnRightPanel[AbsolutleCursorOffseOnRightPanel].Size != 0)
                     {
                         size = 1;
                     }
@@ -678,6 +810,5 @@ namespace Far
                 return ConsoleWidht - ConsoleWidht / 4;
             }
         }
-
     }
 }

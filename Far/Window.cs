@@ -65,16 +65,20 @@ namespace Far
             Console.ForegroundColor = ConsoleColor.White;
             if (view.DriversOnLeftPanel.Count == 0 && view.DriversOnRightPanel.Count == 0)
             {
+                view.AbsolutleCursorOffseOnRightPanel = view.PageInScrollingInRightPanel * (view.ConsoleHeight - 8);
+                view.AbsolutleCursorOffseOnLeftPanel = view.PageInScrollingInLeftPanel * (view.ConsoleHeight - 8);
                 view.ShowFiles(new Panel(view.PathOnLeftPanel, FilePanel.Left));
                 view.ShowFiles(new Panel(view.PathOnRightPanel, FilePanel.Right));
             }
             else if (view.DriversOnLeftPanel.Count == 0 && view.DriversOnRightPanel.Count != 0)
             {
                 view.ShowFiles(new Panel(view.PathOnLeftPanel, FilePanel.Left));
+                view.AbsolutleCursorOffseOnLeftPanel = view.PageInScrollingInLeftPanel * (view.ConsoleHeight - 8);
                 view.ShowDisk(FilePanel.Right);
             }
             else if (view.DriversOnLeftPanel.Count != 0 && view.DriversOnRightPanel.Count == 0)
             {
+                view.AbsolutleCursorOffseOnRightPanel = view.PageInScrollingInRightPanel * (view.ConsoleHeight - 8);
                 view.ShowFiles(new Panel(view.PathOnRightPanel, FilePanel.Right));
                 view.ShowDisk(FilePanel.Left);
             }

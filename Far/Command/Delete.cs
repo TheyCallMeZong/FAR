@@ -14,39 +14,49 @@
         {
             View view = View.GetInstance();
             FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
-            if (view.FilePanel == FilePanel.Left)
+            try
             {
-                FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, $"Do you want to delete {view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name}?");
-                var click = Console.ReadKey();
-                if (click.Key == ConsoleKey.Y)
+                if (view.FilePanel == FilePanel.Left)
                 {
-                    if (File.Exists(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name))
+                    FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, $"Do you want to delete {view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name}?");
+                    var click = Console.ReadKey();
+                    if (click.Key == ConsoleKey.Y)
                     {
-                        File.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name);
+                        if (File.Exists(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name))
+                        {
+                            File.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name);
+                        }
+                        else
+                        {
+                            Directory.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name, true);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, $"Do you want to delete {view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name}?");
+                    var click = Console.ReadKey();
+                    if (click.Key == ConsoleKey.Y)
                     {
-                        Directory.Delete(view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name, true);
+                        if (File.Exists(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name))
+                        {
+                            File.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name);
+                        }
+                        else
+                        {
+                            Directory.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name, true);
+                        }
                     }
                 }
             }
-            else
+            catch
             {
-                FormWithMessage.ShowYN(view.ConsoleWidht, view.ConsoleHeight, $"Do you want to delete {view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name}?");
-                var click = Console.ReadKey();
-                if (click.Key == ConsoleKey.Y)
-                {
-                    if (File.Exists(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name))
-                    {
-                        File.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name);
-                    }
-                    else
-                    {
-                        Directory.Delete(view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name, true);
-                    }
-                }
+
             }
-            Window.HideMessage();
+            finally
+            {
+                Window.HideMessage();
+            }
             return false;
         }
     }

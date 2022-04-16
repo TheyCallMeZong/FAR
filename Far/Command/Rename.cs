@@ -24,7 +24,7 @@
             {
                 if (view.FilePanel == FilePanel.Left)
                 {
-                    var file = view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name;
+                    var file = view.PathOnLeftPanel + "\\" + view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name;
                     if (File.Exists(file))
                     {
                         if (!File.Exists(view.PathOnLeftPanel + "\\" + newFileName))
@@ -42,7 +42,7 @@
                 }
                 else
                 {
-                    var file = view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name;
+                    var file = view.PathOnRightPanel + "\\" + view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name;
                     if (File.Exists(file))
                     {
                         if (!File.Exists(view.PathOnRightPanel + "\\" + newFileName))

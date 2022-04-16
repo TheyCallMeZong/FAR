@@ -39,10 +39,11 @@ namespace Far.Command
                     view.SetStartCursor(view.FilePanel);
                     return false;
                 }
-                item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4];
+                item = view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel];
 
                 if (item.Extension == null)
                 {
+                    view.PageInScrollingInLeftPanel = 0;
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Left));
                     view.SetStartCursor(view.FilePanel);
                 }
@@ -86,10 +87,11 @@ namespace Far.Command
                     return false;
                 }
 
-                item = view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4];
+                item = view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel];
 
                 if (item.Extension == null)
                 {
+                    view.PageInScrollingInRightPanel = 0;
                     view.ShowFiles(new Panel(item.Path + "\\" + item.Name, FilePanel.Right));
                     view.SetStartCursor(view.FilePanel);
                 }

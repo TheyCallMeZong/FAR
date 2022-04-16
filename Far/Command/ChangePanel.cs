@@ -30,8 +30,9 @@
                     if (view.CursorOffsetOnRightPanel == 3)
                     {
                         view.CursorOffsetOnRightPanel++;
+                        view.AbsolutleCursorOffseOnRightPanel++;
                     }
-                    var file = view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name;
+                    var file = view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name;
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.SetCursorPosition(view.ConsoleWidht / 2 + 1, view.CursorOffsetOnRightPanel);
                     Console.WriteLine(file);
@@ -61,7 +62,7 @@
                         Console.WriteLine("[..]");
                         return false;
                     }
-                    var item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name;
+                    var item = view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name;
                     Console.SetCursorPosition(1, view.CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.WriteLine(item);
@@ -86,8 +87,9 @@
                     if (view.CursorOffsetOnLeftPanel == 3)
                     {
                         view.CursorOffsetOnLeftPanel++;
+                        view.AbsolutleCursorOffseOnLeftPanel++;
                     }
-                    var file = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4].Name;
+                    var file = view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel].Name;
                     Console.SetCursorPosition(1, view.CursorOffsetOnLeftPanel);
                     Console.BackgroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(file);
@@ -117,7 +119,7 @@
                         Console.WriteLine("[..]");
                         return false;
                     }
-                    var file = view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4].Name;
+                    var file = view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel].Name;
                     Console.SetCursorPosition(view.ConsoleWidht / 2 + 1, view.CursorOffsetOnRightPanel);
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.WriteLine(file);
