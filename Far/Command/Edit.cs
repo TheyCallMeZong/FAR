@@ -15,7 +15,7 @@ namespace Far.Command
             View view = View.GetInstance();
             if (view.FilePanel == FilePanel.Left)
             {
-                item = view.FilesAndDirectoriesOnLeftPanel[view.CursorOffsetOnLeftPanel - 4];
+                item = view.FilesAndDirectoriesOnLeftPanel[view.AbsolutleCursorOffseOnLeftPanel];
                 if (item.Extension == ".txt")
                 {
                     Process process = new();
@@ -32,7 +32,7 @@ namespace Far.Command
             }
             else
             {
-                item = view.FilesAndDirectoriesOnRightPanel[view.CursorOffsetOnRightPanel - 4];
+                item = view.FilesAndDirectoriesOnRightPanel[view.AbsolutleCursorOffseOnRightPanel];
 
                 if (item.Extension == ".txt")
                 {
