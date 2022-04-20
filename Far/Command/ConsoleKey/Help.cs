@@ -14,7 +14,9 @@
         {
             View view = View.GetInstance();
             FormWithMessage.Show(view.ConsoleWidht, view.ConsoleHeight);
-            FormWithMessage.ShowHelpMessage(view.ConsoleWidht, view.ConsoleHeight, view.menu);
+            List<string> message = view.menu.ToList();
+            message.Add("Tab ChangePanel");
+            FormWithMessage.ShowHelpMessage(view.ConsoleWidht, view.ConsoleHeight, message.ToArray());
             Window.MenuIsOpen = true;
             return false;
         }

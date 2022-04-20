@@ -3,7 +3,7 @@
     /// <summary>
     /// Паттер команда
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">ConsoleKey or string</typeparam>
     public interface ICommand<T>
     {
         /// <summary>
@@ -16,7 +16,6 @@
         /// <summary>
         /// Выполнение команды
         /// </summary>
-        /// <param name="item"></param>
         /// <returns></returns>
         public bool Execute();
     }

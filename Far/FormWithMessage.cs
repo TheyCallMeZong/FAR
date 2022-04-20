@@ -44,8 +44,8 @@
                 Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 2, 1 + i + (ConsoleHeight / 2 - ConsoleHeight / 4));
                 Console.WriteLine(text[i]);
             }
-            Console.SetCursorPosition(ConsoleWidht / 2 - ConsoleWidht / 4 + 2, 1 + text.Length + (ConsoleHeight / 2 - ConsoleHeight / 4));
-            Console.Write("Tab ChangePanel");
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.ForegroundColor = ConsoleColor.White;    
         }
 
         /// <summary>

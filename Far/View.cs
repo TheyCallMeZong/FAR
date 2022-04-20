@@ -175,7 +175,7 @@ namespace Far
             "F6 Renmove",
             "F7 CreateDirectory",
             "F8 Delete",
-            "<3",
+            "F9 cmd",
             "F10 Exit"
         };
         /// <summary>
@@ -732,7 +732,6 @@ namespace Far
                 FilesAndDirectoriesOnRightPanel.Clear();
             }
             OffsetForFileAndDir = 3;
-            SetStartCursor(FilePanel);
         }
 
         /// <summary>

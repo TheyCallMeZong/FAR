@@ -24,17 +24,13 @@
             {
                 if (view.FilePanel == FilePanel.Left)
                 {
-                    if (!Directory.Exists(view.PathOnLeftPanel + "\\" + name))
-                    {
-                        Directory.CreateDirectory(view.PathOnLeftPanel + "\\" + name);
-                    }
+                    var e = Directory.GetDirectories(view.PathOnLeftPanel, "*" + name);
+                    Directory.CreateDirectory(Directory.Exists(view.PathOnLeftPanel + "\\" + name) ? view.PathOnLeftPanel + "\\" + $"({e.Length + 1})" + name : view.PathOnLeftPanel + "\\" + name);
                 }
                 else
                 {
-                    if (!Directory.Exists(view.PathOnRightPanel + "\\" + name))
-                    {
-                        Directory.CreateDirectory(view.PathOnRightPanel + "\\" + name);
-                    }
+                    var e = Directory.GetDirectories(view.PathOnRightPanel, "*" + name);
+                    Directory.CreateDirectory(Directory.Exists(view.PathOnRightPanel + "\\" + name) ? view.PathOnRightPanel + "\\" + $"({e.Length + 1})" + name : view.PathOnRightPanel + "\\" + name);
                 }
             }
             catch

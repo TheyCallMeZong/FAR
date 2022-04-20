@@ -24,19 +24,15 @@
             {
                 if (view.FilePanel == FilePanel.Left)
                 {
-                    if (!File.Exists(view.PathOnLeftPanel + "\\" + fileName))
-                    {
-                        var fs = File.Create(view.PathOnLeftPanel + "\\" + fileName);
-                        fs.Close();
-                    }
+                    var e = Directory.GetFiles(view.PathOnLeftPanel, "*" + fileName);
+                    var file = File.Create(File.Exists(view.PathOnLeftPanel + "\\" + fileName) ? view.PathOnLeftPanel + "\\" + $"({e.Length + 1})" + fileName: view.PathOnLeftPanel + "\\" + fileName);
+                    file.Close();
                 }
                 else
                 {
-                    if (!File.Exists(view.PathOnRightPanel + "\\" + fileName))
-                    {
-                        var fs = File.Create(view.PathOnRightPanel + "\\" + fileName);
-                        fs.Close();
-                    }
+                    var e = Directory.GetFiles(view.PathOnRightPanel, "*" + fileName);
+                    var file = File.Create(File.Exists(view.PathOnRightPanel + "\\" + fileName) ? view.PathOnRightPanel + "\\" + $"({e.Length + 1})" + fileName : view.PathOnRightPanel + "\\" + fileName);
+                    file.Close();
                 }
             }
             catch
