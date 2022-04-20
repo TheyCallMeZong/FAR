@@ -33,6 +33,7 @@ namespace Far.Command
                     if (!path.Contains("\\"))
                     {
                         view.ShowDisk(view.FilePanel);
+                        view.SetStartCursor(view.FilePanel);
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Left));
@@ -80,6 +81,7 @@ namespace Far.Command
                     if (!path.Contains("\\"))
                     {
                         view.ShowDisk(view.FilePanel);
+                        view.SetStartCursor(view.FilePanel);
                         return false;
                     }
                     view.ShowFiles(new Panel(path, FilePanel.Right));

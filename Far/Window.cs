@@ -27,7 +27,7 @@ namespace Far
                 new Copy(),
                 new CreateDirectory(),
                 new Delete(),
-                new Tree()
+                new CommandLine()
             };
 
         /// <summary>
