@@ -44,6 +44,7 @@
                 if (Directory.Exists(path))
                 {
                     new Clear(view.ConsoleWidht, view.ConsoleHeight).ClearPanel(view.FilePanel);
+                    view.PageInScrollingInLeftPanel = 0;
                     view.ShowFiles(new Panel(path, FilePanel.Left));
                 }
             }
@@ -72,6 +73,7 @@
                 if (Directory.Exists(path))
                 {
                     new Clear(view.ConsoleWidht, view.ConsoleHeight).ClearPanel(view.FilePanel);
+                    view.PageInScrollingInRightPanel = 0;
                     view.ShowFiles(new Panel(path, FilePanel.Right));
                 }
             }
