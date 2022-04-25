@@ -46,6 +46,13 @@
                     new Clear(view.ConsoleWidht, view.ConsoleHeight).ClearPanel(view.FilePanel);
                     view.PageInScrollingInLeftPanel = 0;
                     view.ShowFiles(new Panel(path, FilePanel.Left));
+                    CommandLine.BackColor = ConsoleColor.Green;
+                    CommandLine.Text = "good";
+                }
+                else
+                {
+                    CommandLine.BackColor = ConsoleColor.Red;
+                    CommandLine.Text = "path not found";
                 }
             }
             else
@@ -75,6 +82,13 @@
                     new Clear(view.ConsoleWidht, view.ConsoleHeight).ClearPanel(view.FilePanel);
                     view.PageInScrollingInRightPanel = 0;
                     view.ShowFiles(new Panel(path, FilePanel.Right));
+                    CommandLine.BackColor = ConsoleColor.Green;
+                    CommandLine.Text = "good";
+                }
+                else
+                {
+                    CommandLine.BackColor = ConsoleColor.Red;
+                    CommandLine.Text = "path not found";
                 }
             }
             return false;

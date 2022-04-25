@@ -63,10 +63,13 @@
                         Directory.Move(view.PathOnRightPanel + "\\" + text[1], view.PathOnLeftPanel + "\\" + text[1]);
                     }
                 }
+                CommandLine.Text = "good";
+                CommandLine.BackColor = ConsoleColor.Green;
             }
             catch
             {
-
+                CommandLine.Text = "error";
+                CommandLine.BackColor = ConsoleColor.Red;
             }
             finally
             {
