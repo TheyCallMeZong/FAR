@@ -9,6 +9,7 @@
         /// массив, содержащий команду и панель
         /// </summary>
         private string[] text;
+
         public bool CanExecute(string item)
         {
             text = item.Split(' ');
