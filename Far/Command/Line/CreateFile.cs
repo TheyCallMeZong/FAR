@@ -37,10 +37,13 @@
                     view.ShowFiles(new Panel(view.PathOnRightPanel, FilePanel.Right));
                     file.Close();
                 }
+                CommandLine.Text = "good";
+                CommandLine.BackColor = ConsoleColor.Green;
             }
             catch
             {
-
+                CommandLine.Text = "error";
+                CommandLine.BackColor = ConsoleColor.Red;
             }
             return false;
         }

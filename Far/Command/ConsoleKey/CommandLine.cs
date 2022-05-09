@@ -8,7 +8,12 @@
         /// <summary>
         /// переменная с текстом об ошибках или успехаха
         /// </summary>
-        public static string Text = string.Empty;
+        public static string Text = "good";
+
+        /// <summary>
+        /// цвет
+        /// </summary>
+        public static ConsoleColor BackColor = ConsoleColor.Green;
 
         /// <summary>
         /// список команд
@@ -73,8 +78,8 @@
                             Console.SetCursorPosition(1, view.ConsoleHeight - 3);
                             Console.Write(string.Concat(Enumerable.Repeat(' ', view.ConsoleWidht - 1)));
                             Console.SetCursorPosition(view.ConsoleWidht - 19, view.ConsoleHeight - 3);
-                            Console.BackgroundColor = ConsoleColor.Green;
-                            Console.WriteLine("good");
+                            Console.BackgroundColor = BackColor;
+                            Console.WriteLine(Text);
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
                         }
                         break;

@@ -9,6 +9,7 @@
         /// массив, содержащий команду и панель
         /// </summary>
         private string[] text;
+
         public bool CanExecute(string item)
         {
             text = item.Split(' ');
@@ -26,6 +27,8 @@
                 if (console == 0 || console == 1)
                 {
                     view.FilePanel = (FilePanel)console;
+                    CommandLine.Text = "good";
+                    CommandLine.BackColor = ConsoleColor.Green;
                 }
             }
             else
@@ -33,10 +36,19 @@
                 if (text[1].ToLower() == "right")
                 {
                     view.FilePanel = FilePanel.Right;
+                    CommandLine.Text = "good";
+                    CommandLine.BackColor = ConsoleColor.Green;
                 }
                 else if (text[1].ToLower() == "left")
                 {
                     view.FilePanel= FilePanel.Left;
+                    CommandLine.Text = "good";
+                    CommandLine.BackColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    CommandLine.Text = "error";
+                    CommandLine.BackColor = ConsoleColor.Red;
                 }
             }
             return false;
